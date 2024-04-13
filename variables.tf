@@ -107,7 +107,7 @@ variable "secrets" {
 }
 
 variable "mounts" {
-  type = map(object({
+  type = list(object({
     target = string
     type   = optional(string, "bind")
     source = optional(string)
@@ -128,18 +128,18 @@ variable "mounts" {
   }))
   description = "The mounts to create in the container"
   nullable    = false
-  default     = {}
+  default     = []
 }
 
 variable "devices" {
-  type = map(object({
+  type = list(object({
     source    = string
     target    = string
     read_only = optional(bool, true)
   }))
   description = "The devices to mount in the container"
   nullable    = false
-  default     = {}
+  default     = []
 }
 
 variable "health_check" {
