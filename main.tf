@@ -111,7 +111,7 @@ resource "docker_service" "default" {
       }
 
       dynamic "healthcheck" {
-        for_each = var.healthcheck[*]
+        for_each = var.health_check[*]
         content {
           test     = healthcheck.value.test
           interval = healthcheck.value.interval
@@ -251,7 +251,7 @@ resource "docker_container" "default" {
   }
 
   dynamic "healthcheck" {
-    for_each = var.healthcheck[*]
+    for_each = var.health_check[*]
     content {
       test     = healthcheck.value.test
       interval = healthcheck.value.interval

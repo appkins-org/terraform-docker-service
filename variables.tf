@@ -116,7 +116,7 @@ variable "devices" {
   default     = {}
 }
 
-variable "healthcheck" {
+variable "health_check" {
   type = object({
     test     = list(string)
     interval = optional(string, "10s")
