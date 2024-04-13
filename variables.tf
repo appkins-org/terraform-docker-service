@@ -53,7 +53,7 @@ variable "env" {
 variable "volumes" {
   type = map(object({
     target    = string
-    read_only = bool
+    read_only = optional(bool, false)
   }))
   description = "The volumes to mount in the container"
   nullable    = false
@@ -62,8 +62,8 @@ variable "volumes" {
 
 variable "configs" {
   type = map(object({
-    container_path = string
-    content        = string
+    target  = string
+    content = string
   }))
   description = "The configs to create in the container"
   nullable    = false
@@ -72,8 +72,8 @@ variable "configs" {
 
 variable "secrets" {
   type = map(object({
-    container_path = string
-    content        = string
+    target  = string
+    content = string
   }))
   description = "The secrets to create in the container"
   nullable    = false

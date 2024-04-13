@@ -97,7 +97,7 @@ resource "docker_service" "default" {
         content {
           secret_id   = docker_secret.default[secrets.key].id
           secret_name = docker_secret.default[secrets.key].name
-          file_name   = secrets.value.container_path
+          file_name   = secrets.value.target
         }
       }
 
@@ -106,7 +106,7 @@ resource "docker_service" "default" {
         content {
           config_id   = docker_config.default[configs.key].id
           config_name = docker_config.default[configs.key].name
-          file_name   = configs.value.container_path
+          file_name   = configs.value.target
         }
       }
 
@@ -181,12 +181,6 @@ resource "docker_container" "default" {
   command = var.args
 
   env = formatlist("%s=%s", keys(var.env), values(var.env))
-
-  volumes {
-    container_path = "/var/run/docker.sock"
-    host_path      = "/var/run/docker.sock"
-    read_only      = true
-  }
 
   dynamic "mounts" {
     for_each = var.mounts
