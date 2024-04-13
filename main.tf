@@ -226,9 +226,9 @@ resource "docker_container" "default" {
   dynamic "devices" {
     for_each = var.devices
     content {
-      container_path = volumes.value.target
-      host_path      = volumes.value.source
-      permissions    = volumes.value.read_only ? "r" : "rw"
+      container_path = devices.value.target
+      host_path      = devices.value.source
+      permissions    = devices.value.read_only ? "r" : "rw"
     }
   }
 
