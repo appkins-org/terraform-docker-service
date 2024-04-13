@@ -189,6 +189,7 @@ dist
 *.tfvars
 # .terraform.lock.hcl on examples folders
 examples/**/.terraform.lock.hcl
+example/.terraform.lock.hcl
 
 # Crash log files
 crash.log
