@@ -177,7 +177,7 @@ resource "docker_container" "default" {
   count = var.swarm_mode ? 0 : 1
 
   name  = var.name
-  image = data.docker_image.default[0].id
+  image = data.docker_registry_image.default[0].id
 
   entrypoint = var.command
 
