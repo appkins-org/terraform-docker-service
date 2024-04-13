@@ -7,6 +7,25 @@ variable "name" {
 variable "network_id" {
   type        = string
   description = "The name of the network to attach the container to"
+  nullable    = true
+  default     = null
+}
+
+variable "network_mode" {
+  type        = string
+  description = "The network mode for the container"
+  nullable    = true
+  default     = null
+}
+
+variable "capabilities" {
+  type = object({
+    add  = optional(list(string))
+    drop = optional(list(string))
+  })
+  description = "The capabilities to add or drop in the container."
+  nullable    = true
+  default     = null
 }
 
 variable "swarm_mode" {
@@ -20,6 +39,13 @@ variable "image" {
   type        = string
   description = "The image to use for the container"
   nullable    = false
+}
+
+variable "labels" {
+  type        = map(string)
+  description = "The labels to apply to the container"
+  nullable    = false
+  default     = {}
 }
 
 variable "ports" {

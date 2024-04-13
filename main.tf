@@ -146,8 +146,11 @@ resource "docker_service" "default" {
       options = var.log_driver.options
     }
 
-    networks_advanced {
-      name = var.network_id
+    dynamic "networks_advanced" {
+      for_each = var.network_id[*]
+      content {
+        name = networks_advanced.value
+      }
     }
   }
 
@@ -181,6 +184,14 @@ resource "docker_container" "default" {
   command = var.args
 
   env = formatlist("%s=%s", keys(var.env), values(var.env))
+
+  dynamic "labels" {
+    for_each = var.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
+  }
 
   dynamic "mounts" {
     for_each = var.mounts
@@ -240,8 +251,21 @@ resource "docker_container" "default" {
     }
   }
 
-  networks_advanced {
-    name = var.network_id
+  network_mode = var.network_mode
+
+  dynamic "networks_advanced" {
+    for_each = var.network_id[*]
+    content {
+      name = networks_advanced.value
+    }
+  }
+
+  dynamic "capabilities" {
+    for_each = var.capabilities[*]
+    content {
+      add  = capabilities.value.add
+      drop = capabilities.value.drop
+    }
   }
 
   dynamic "healthcheck" {
