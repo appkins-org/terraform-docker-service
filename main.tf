@@ -235,7 +235,7 @@ resource "docker_container" "default" {
   dynamic "upload" {
     for_each = var.swarm_mode ? {} : merge(var.configs, var.secrets)
     content {
-      file    = upload.value.host_path
+      file    = upload.value.target
       content = upload.value.content
     }
   }
