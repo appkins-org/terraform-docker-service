@@ -1,3 +1,10 @@
+resource "terraform_data" "replacement" {
+  input = {
+    global  = var.global
+    configs = { for k, v in var.configs : k => base64sha256(jsonencode(v)) }
+  }
+}
+
 resource "docker_image" "default" {
   count = var.swarm_mode ? 0 : 1
 
@@ -20,8 +27,13 @@ resource "docker_secret" "default" {
 resource "docker_config" "default" {
   for_each = var.swarm_mode ? var.configs : {}
 
-  name = each.key
+  name = "${each.key}-config-${replace(timestamp(), ":", ".")}"
   data = base64encode(each.value.content)
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
 }
 
 resource "docker_volume" "default" {
@@ -160,6 +172,11 @@ resource "docker_service" "default" {
       prefs = var.placement.prefs
 
       max_replicas = var.max_replicas
+
+      platforms {
+        os           = "linux"
+        architecture = "amd64"
+      }
     }
 
     log_driver {
@@ -194,6 +211,10 @@ resource "docker_service" "default" {
 
   mode {
     global = var.global
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.replacement]
   }
 }
 
