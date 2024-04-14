@@ -191,7 +191,7 @@ resource "docker_container" "default" {
 
   command = var.args
 
-  env = formatlist("%s=%s", keys(var.env), values(var.env))
+  env = formatlist("%s=\"%s\"", keys(var.env), values(var.env))
 
   dynamic "labels" {
     for_each = var.labels
