@@ -48,27 +48,7 @@ resource "docker_service" "default" {
       env = var.env
 
       dynamic "mounts" {
-        for_each = var.devices
-        content {
-          target    = mounts.value.target
-          source    = mounts.value.source
-          type      = "bind"
-          read_only = mounts.value.read_only
-        }
-      }
-
-      dynamic "mounts" {
-        for_each = var.volumes
-        content {
-          target    = mounts.value.target
-          source    = docker_volume.default[mounts.key].name
-          type      = "volume"
-          read_only = mounts.value.read_only
-        }
-      }
-
-      dynamic "mounts" {
-        for_each = var.mounts
+        for_each = local.mounts
         content {
           target    = mounts.value.target
           source    = mounts.value.source
@@ -76,14 +56,14 @@ resource "docker_service" "default" {
           read_only = mounts.value.read_only
 
           dynamic "bind_options" {
-            for_each = mounts.value.bind_options[*]
+            for_each = lookup(mounts.value, "bind_options", null)[*]
             content {
               propagation = bind_options.value.propagation
             }
           }
 
           dynamic "tmpfs_options" {
-            for_each = mounts.value.tmpfs_options[*]
+            for_each = lookup(mounts.value, "tmpfs_options", null)[*]
             content {
               size_bytes = tmpfs_options.value.size_bytes
               mode       = tmpfs_options.value.mode
@@ -91,7 +71,7 @@ resource "docker_service" "default" {
           }
 
           dynamic "volume_options" {
-            for_each = mounts.value.volume_options[*]
+            for_each = lookup(mounts.value, "volume_options", null)[*]
             content {
               driver_name = volume_options.value.driver_name
             }
@@ -166,7 +146,7 @@ resource "docker_service" "default" {
     mode = var.endpoint_mode
 
     dynamic "ports" {
-      for_each = local.ports
+      for_each = var.ports
       content {
         target_port    = ports.value.internal
         published_port = ports.value.external

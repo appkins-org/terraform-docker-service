@@ -83,7 +83,7 @@ variable "env" {
 
 variable "volumes" {
   type = map(object({
-    target    = string
+    target    = optional(string)
     read_only = optional(bool, false)
   }))
   description = "The volumes to mount in the container"
