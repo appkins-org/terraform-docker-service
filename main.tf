@@ -1,3 +1,10 @@
+resource "docker_image" "default" {
+  count = var.swarm_mode ? 0 : 1
+
+  name          = data.docker_registry_image.default[0].name
+  pull_triggers = [data.docker_registry_image.default[0].sha256_digest]
+}
+
 resource "docker_secret" "default" {
   for_each = var.swarm_mode ? var.secrets : {}
 
@@ -177,7 +184,7 @@ resource "docker_container" "default" {
   count = var.swarm_mode ? 0 : 1
 
   name  = var.name
-  image = data.docker_registry_image.default[0].id
+  image = docker_image.default[0].id
 
   entrypoint = var.command
 
