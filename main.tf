@@ -47,6 +47,44 @@ resource "docker_service" "default" {
 
       env = var.env
 
+      groups = var.groups
+
+      read_only = false
+
+      sysctl = var.sysctl
+
+      dynamic "privileges" {
+        for_each = var.privileges[*]
+        content {
+          dynamic "se_linux_context" {
+            for_each = lookup(privileges.value, "se_linux", null)[*]
+            content {
+              disable = se_linux_context.value.disable
+              user    = se_linux_context.value.user
+              role    = se_linux_context.value.role
+              type    = se_linux_context.value.type
+              level   = se_linux_context.value.level
+            }
+          }
+        }
+      }
+
+      dynamic "capabilities" {
+        for_each = var.capabilities[*]
+        content {
+          add  = capabilities.value.add
+          drop = capabilities.value.drop
+        }
+      }
+
+      dynamic "labels" {
+        for_each = var.labels
+        content {
+          label = labels.key
+          value = labels.value
+        }
+      }
+
       dynamic "mounts" {
         for_each = local.mounts
         content {
@@ -117,13 +155,9 @@ resource "docker_service" "default" {
     }
 
     placement {
-      constraints = [
-        "node.role==manager",
-      ]
+      constraints = var.placement.constraints
 
-      prefs = [
-        "spread=node.role.manager",
-      ]
+      prefs = var.placement.prefs
 
       max_replicas = var.max_replicas
     }
@@ -133,6 +167,8 @@ resource "docker_service" "default" {
 
       options = var.log_driver.options
     }
+
+    runtime = var.runtime
 
     dynamic "networks_advanced" {
       for_each = var.network_id[*]

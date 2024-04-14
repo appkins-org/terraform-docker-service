@@ -32,7 +32,7 @@ variable "swarm_mode" {
   type        = bool
   description = "Whether the container should be created in swarm mode"
   nullable    = false
-  default     = false
+  default     = true
 }
 
 variable "image" {
@@ -93,8 +93,11 @@ variable "volumes" {
 
 variable "configs" {
   type = map(object({
-    target  = string
-    content = string
+    target    = string
+    content   = string
+    file_gid  = optional(number, 0)
+    file_uid  = optional(number, 0)
+    file_mode = optional(number, 420)
   }))
   description = "The configs to create in the container"
   nullable    = false
@@ -203,10 +206,17 @@ variable "endpoint_mode" {
   }
 }
 
+variable "groups" {
+  type        = list(string)
+  description = "A list of additional groups that the container process will run as."
+  nullable    = false
+  default     = []
+}
+
 variable "publish_mode" {
   type        = string
   description = "The publish mode for the container"
-  default     = "host"
+  default     = "ingress"
   nullable    = false
 
   validation {
@@ -218,8 +228,18 @@ variable "publish_mode" {
 variable "global" {
   type        = bool
   description = "Whether the container should be global"
-  default     = true
+  default     = false
   nullable    = false
+}
+
+variable "placement" {
+  type = object({
+    constraints = optional(list(string), [])
+    prefs       = optional(list(string), [])
+  })
+  description = "The placement configuration for the container"
+  nullable    = false
+  default     = {}
 }
 
 variable "max_replicas" {
@@ -227,4 +247,33 @@ variable "max_replicas" {
   description = "The maximum number of replicas for the container"
   default     = 1
   nullable    = false
+}
+
+variable "runtime" {
+  type        = string
+  description = "The runtime to use for the container"
+  default     = "container"
+  nullable    = false
+}
+
+variable "sysctl" {
+  type        = map(string)
+  description = "Sysctl config."
+  default     = {}
+  nullable    = false
+}
+
+variable "privileges" {
+  type = object({
+    se_linux = optional(object({
+      disable = optional(bool, false)
+      user    = optional(string, "system_u")
+      role    = optional(string, "system_r")
+      type    = optional(string, "super_t")
+      level   = optional(string, "s0")
+    }))
+  })
+  default     = null
+  nullable    = true
+  description = "SELinux options for the container."
 }
