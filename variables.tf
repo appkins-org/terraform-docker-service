@@ -15,7 +15,7 @@ variable "network_mode" {
   type        = string
   description = "The network mode for the container"
   nullable    = true
-  default     = null
+  default     = "default"
 }
 
 variable "capabilities" {

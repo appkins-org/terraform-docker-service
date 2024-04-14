@@ -261,6 +261,10 @@ resource "docker_container" "default" {
 
   network_mode = var.network_mode
 
+  privileged = false
+
+  publish_all_ports = false
+
   dynamic "networks_advanced" {
     for_each = var.network_id[*]
     content {
@@ -291,7 +295,7 @@ resource "docker_container" "default" {
 
   log_opts = var.log_driver.options
 
-  max_retry_count = var.restart_policy.max_attempts
+  max_retry_count = var.restart_policy.condition == "on-failure" ? var.restart_policy.max_attempts : null
 
   restart = var.restart_policy.condition
 
