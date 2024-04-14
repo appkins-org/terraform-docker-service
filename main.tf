@@ -312,6 +312,14 @@ resource "docker_container" "default" {
   wait = true
 
   lifecycle {
-    ignore_changes = [storage_opts, sysctls, tmpfs, network_data, group_add, ipc_mode, entrypoint, runtime]
+    ignore_changes = [
+      storage_opts,
+      sysctls,
+      tmpfs,
+      group_add,
+      ipc_mode,
+      entrypoint,
+      runtime
+    ]
   }
 }
