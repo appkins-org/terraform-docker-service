@@ -120,10 +120,11 @@ resource "docker_service" "default" {
       dynamic "healthcheck" {
         for_each = var.health_check[*]
         content {
-          test     = healthcheck.value.test
-          interval = healthcheck.value.interval
-          timeout  = healthcheck.value.timeout
-          retries  = healthcheck.value.retries
+          test         = healthcheck.value.test
+          interval     = healthcheck.value.interval
+          timeout      = healthcheck.value.timeout
+          retries      = healthcheck.value.retries
+          start_period = healthcheck.value.start_period
         }
       }
     }
@@ -278,10 +279,11 @@ resource "docker_container" "default" {
   dynamic "healthcheck" {
     for_each = var.health_check[*]
     content {
-      test     = healthcheck.value.test
-      interval = healthcheck.value.interval
-      timeout  = healthcheck.value.timeout
-      retries  = healthcheck.value.retries
+      test         = healthcheck.value.test
+      interval     = healthcheck.value.interval
+      timeout      = healthcheck.value.timeout
+      retries      = healthcheck.value.retries
+      start_period = healthcheck.value.start_period
     }
   }
 

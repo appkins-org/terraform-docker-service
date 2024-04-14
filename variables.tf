@@ -149,10 +149,11 @@ variable "devices" {
 
 variable "health_check" {
   type = object({
-    test     = list(string)
-    interval = optional(string, "10s")
-    timeout  = optional(string, "5s")
-    retries  = optional(number, 4)
+    test         = list(string)
+    interval     = optional(string, "10s")
+    timeout      = optional(string, "5s")
+    retries      = optional(number, 4)
+    start_period = optional(string, "1s")
   })
   description = "The healthcheck configuration for the container"
   nullable    = true
