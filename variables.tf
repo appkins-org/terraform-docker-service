@@ -49,10 +49,15 @@ variable "labels" {
 }
 
 variable "ports" {
-  type        = map(string)
-  description = "The ports to publish. Key is the target port, value is the published port"
+  type = list(object({
+    internal = number
+    external = number
+    protocol = optional(string, "tcp")
+    ip       = optional(string, "0.0.0.0")
+  }))
+  description = "The ports to publish."
   nullable    = false
-  default     = {}
+  default     = []
 }
 
 variable "command" {

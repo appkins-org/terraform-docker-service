@@ -160,9 +160,9 @@ resource "docker_service" "default" {
     dynamic "ports" {
       for_each = var.ports
       content {
-        target_port    = ports.key
-        published_port = ports.value
-        protocol       = "tcp"
+        target_port    = ports.value.internal
+        published_port = ports.value.external
+        protocol       = ports.value.protocol
         publish_mode   = var.publish_mode
       }
     }
@@ -289,8 +289,10 @@ resource "docker_container" "default" {
   dynamic "ports" {
     for_each = var.ports
     content {
-      internal = ports.key
-      external = ports.value
+      internal = ports.value.internal
+      external = ports.value.external
+      protocol = ports.value.protocol
+      ip       = ports.value.ip
     }
   }
 

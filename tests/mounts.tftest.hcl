@@ -1,6 +1,6 @@
 variables {
-  name = "test"
-  image = "test:latest"
+  name       = "test"
+  image      = "test:latest"
   swarm_mode = true
 
   mounts = [{
