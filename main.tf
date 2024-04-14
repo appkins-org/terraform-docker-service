@@ -166,7 +166,7 @@ resource "docker_service" "default" {
     mode = var.endpoint_mode
 
     dynamic "ports" {
-      for_each = var.ports
+      for_each = local.ports
       content {
         target_port    = ports.value.internal
         published_port = ports.value.external
@@ -300,7 +300,7 @@ resource "docker_container" "default" {
   restart = var.restart_policy.condition
 
   dynamic "ports" {
-    for_each = var.ports
+    for_each = local.ports
     content {
       internal = ports.value.internal
       external = ports.value.external
